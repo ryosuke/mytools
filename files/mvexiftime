@@ -1,0 +1,23 @@
+#!/bin/bash
+
+LANG=C
+f=$1
+t=$2
+
+print_help() {
+	echo "Usage: $0 img_file target_dir"
+	exit 1
+}
+
+[ -z $f ] && print_help
+[ -z $t ] && print_help
+
+year=$(exif -t DateTime $f | grep Value | cut -d ":" -f 2 | tr -d " "  )
+month=$(exif -t DateTime $f | grep Value | cut -d ":" -f 3)
+
+[ $? -ne 0 ] && exit 1
+
+[ -z $year ] && exit 1
+
+[ -d $t/$year/$month ] || mkdir -vp $t/$year/$month
+mv -v $f $t/$year/$month/
